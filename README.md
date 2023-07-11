@@ -4,15 +4,17 @@ Implementation of key-value storage described in [Cloud Native Go by Matthew A. 
 
 ## Features
 
-- Concurrency-safe storage implemented with built-in `map` and `sync.RWMutex`
+- Concurrency-safe persisting storage implemented with built-in `map` and `sync.RWMutex`
 
 - REST API implemented with [chi](https://github.com/go-chi/chi)
 
 ## How to use
 
-### 1. [Install Go](https://go.dev/doc/install)
-### 2. Run `go run .`
-### 3. Access key-value storage via REST API
+### 1. [Install Git](https://git-scm.com/downloads)
+### 2. Run `git clone https://github.com/qo/keyval.git`
+### 3. [Install Go](https://go.dev/doc/install)
+### 4. Run `go run .`
+### 5. Access key-value storage via REST API
 
 #### Route `localhost:8090/v1/key/{key}`:
 
@@ -38,7 +40,22 @@ Delete value for provided `key`
 - Empty keys/values are not supported
 - Make sure nothing is running on `localhost:8090`
 
-## Todo
+## Todos
 
-- Persisting Resource State
-- Implementing Transport Layer Security
+### Common
+- Create config file to store: API port, log file name, events and errors channels capacity
+- Implement SQL data storage
+- Implement Transport Layer Security
+
+### File Logger
+- Come up with a better solution to process `DELETE` lines in log
+- Close log file
+- Set maximum size for key and value
+
+## Bugs
+
+### Common
+- Service could shut down while there are still events in the events channel
+
+### File logger
+- If keys or values contain multiple lines/spaces, bad things might happen (events are parsed with `\t`)

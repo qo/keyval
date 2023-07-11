@@ -2,7 +2,10 @@ package store
 
 import (
 	"errors"
+	"fmt"
 	"sync"
+
+	"github.com/qo/keyval/logger"
 )
 
 // Signal errors
@@ -59,4 +62,37 @@ func (s *Store) Delete(key string) error {
 	delete(s.m, key)
 	s.Unlock()
 	return nil
+}
+
+func (s *Store) InitLogger() (logger.Logger, error) {
+
+	// TODO: create config file
+	l, err := logger.NewFileLogger("log")
+	if err != nil {
+		return nil, fmt.Errorf("can't create file logger: %w", err)
+	}
+
+	// Read previous events from logger to
+	// restore store state
+	events, errors := l.ReadEvents()
+
+	e, ok := logger.Event{}, true
+	// while events and errors channels are not closed
+	// and no operations caused errors
+	for ok && err == nil {
+		select {
+		case err, ok = <-errors:
+		case e, ok = <-events:
+			switch e.Type {
+			case logger.EventPut:
+				err = s.Put(e.Key, e.Val)
+			case logger.EventDelete:
+				err = s.Delete(e.Key)
+			}
+		}
+	}
+
+	l.Run()
+
+	return l, nil
 }

@@ -7,16 +7,23 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
+	"github.com/qo/keyval/logger"
 	"github.com/qo/keyval/store"
 )
 
 var s *store.Store
+var l logger.Logger
 
 func init() {
 	st, err := store.CreateStore()
 	if err != nil {
-		log.Fatal("unexpected error occured during init")
+		log.Fatalf("unexpected error occured during init: %w", err)
 	}
+	lg, err := st.InitLogger()
+	if err != nil {
+		log.Fatal("unexpected error occured during init: %w", err)
+	}
+	l = lg
 	s = st
 }
 
@@ -71,6 +78,8 @@ func putHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	l.WritePut(key, val)
+
 	w.WriteHeader(http.StatusCreated)
 	res := []byte("put: " + key + " - " + val + "\n")
 	w.Write(res)
@@ -89,6 +98,8 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
+
+	l.WriteDelete(key)
 
 	w.WriteHeader(http.StatusOK)
 	res := []byte("deleted: " + key + "\n")
