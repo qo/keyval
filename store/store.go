@@ -67,9 +67,11 @@ func (s *Store) Delete(key string) error {
 func (s *Store) InitLogger() (logger.Logger, error) {
 
 	// TODO: create config file
-	l, err := logger.NewFileLogger("log")
+	l, err := logger.NewSQLiteLogger(logger.SQLiteConfig{
+		Path: "log.db",
+	})
 	if err != nil {
-		return nil, fmt.Errorf("can't create file logger: %w", err)
+		return nil, fmt.Errorf("failed to init logger: %w", err)
 	}
 
 	// Read previous events from logger to

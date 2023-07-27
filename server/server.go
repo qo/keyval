@@ -21,7 +21,7 @@ func init() {
 	}
 	lg, err := st.InitLogger()
 	if err != nil {
-		log.Fatal("unexpected error occured during init: %w", err)
+		log.Fatalf("unexpected error occured during init: %w", err)
 	}
 	l = lg
 	s = st

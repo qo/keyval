@@ -22,3 +22,7 @@ const (
 	EventPut EventType = iota + 1
 	EventDelete
 )
+
+// TODO: create a config
+const eventChanCapacity = 16
+const errChanCapacity = 1

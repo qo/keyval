@@ -6,6 +6,8 @@ Implementation of key-value storage described in [Cloud Native Go by Matthew A. 
 
 - Concurrency-safe persisting storage implemented with built-in `map` and `sync.RWMutex`
 
+- File Logger and SQLite Logger
+
 - REST API implemented with [chi](https://github.com/go-chi/chi)
 
 ## How to use
@@ -43,19 +45,32 @@ Delete value for provided `key`
 ## Todos
 
 ### Common
-- Create config file to store: API port, log file name, events and errors channels capacity
-- Implement SQL data storage
+- Set maximum sizes for keys and values
+- Create config file to store:
+    - REST API port
+    - log file name
+    - log table name
+    - names for columns of log table
+    - events and errors channels capacity
 - Implement Transport Layer Security
+- Containerize the application
 
 ### File Logger
 - Come up with a better solution to process `DELETE` lines in log
 - Close log file
-- Set maximum size for key and value
+
+### SQL Logger
+- Close connection with database
 
 ## Bugs
 
 ### Common
 - Service could shut down while there are still events in the events channel
 
-### File logger
+### File Logger
 - If keys or values contain multiple lines/spaces, bad things might happen (events are parsed with `\t`)
+
+## Security vulnerabilities
+
+### SQL Logger
+- SQL queries are not prepared

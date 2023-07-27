@@ -41,8 +41,6 @@ func (l *FileLogger) Err() <-chan error {
 }
 
 // TODO: create a config
-const eventChanCapacity = 16
-const errChanCapacity = 1
 const lineFormat = "%d\t%d\t%s\t%s"
 
 func (l *FileLogger) Run() {
